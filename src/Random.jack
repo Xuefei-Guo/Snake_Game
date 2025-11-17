@@ -1,0 +1,25 @@
+/* Random.jack
+   Random number generator.
+ */
+class Random {
+
+    static int seed;
+
+    /* random seed */
+    function void setSeed(int s) {
+        let seed = s;
+        return;
+    }
+
+    /* return a random integer */
+    function int random() {
+        // LCG: seed = (a * seed + c) mod 2^16
+        let seed = seed * 25173 + 13849;
+
+        // keep the low 15 bits, resulting in 0..32767
+        // 32767 = 0b0111111111111111
+        let seed = seed & 32767;
+
+        return seed;
+    }
+}

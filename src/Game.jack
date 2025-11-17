@@ -1,0 +1,323 @@
+/* Game.jack
+ * Top-level game controller
+ * Manages Snake and Food objects.
+ * Handles game state, loop, AI, scoring and rendering.
+ */
+class Game {
+    static int cellSize, width, height; // grid cell size, horizontal and vertical cell counts
+    field Snake snake;
+    field Food food;
+
+    // game state
+    field boolean running; 
+    field boolean pausing; 
+    field boolean gameOver;
+
+    field int score; // current score
+    field int hiScore; // highest score in this run
+    field boolean autopilot; // AI on/off
+
+    field int delayTime; // frame delay time in ms
+
+    // ui strings
+    field String ScoreString;
+    field String HiScoreString;
+    field String PauseString;
+    field String AIString;
+    field String GameOverString;
+
+    constructor Game new() {
+        var int seed, key;
+        let cellSize = 16;
+        let width = 512 / cellSize; // 32 cells
+        let height = 256 / cellSize - 2; // 14 cells
+        let ScoreString = "Score: ";
+        let HiScoreString = "   Highest Score: ";
+        let PauseString = "   [PAUSE]";
+        let AIString = "   [AI]";
+        let GameOverString = "Game Over   (R = restart, Q = quit)";
+
+        // clear screen & init random number generator
+        do Screen.clearScreen();
+        do Output.moveCursor(21, 0);
+        do Output.printString("SNAKE  (W/A/S/D move, P pause, Space AI, R restart, Q quit)");
+        do Output.println();
+        do Output.printString("Press any key to start...");
+        do Output.println();
+
+        // use key press delay to seed RNG
+        let key = Keyboard.keyPressed();
+        let seed = 0;
+        while (key = 0) {
+            let key = Keyboard.keyPressed();
+            let seed = seed + 1;
+            do Sys.wait(1);
+        }
+        do Random.setSeed(seed);
+
+        // create snake & food
+        do Screen.clearScreen();
+        do Snake.init(cellSize, width, height, 128); // max length 128
+        do Food.init(cellSize, width, height);
+        let snake = Snake.new(width / 2, height / 2, 4); // start in middle, length 4
+        let food  = Food.new();
+        do food.reGenerate(snake);
+
+        // init game state
+        let running   = true;
+        let pausing    = false;
+        let gameOver  = false;
+        let score     = 0;
+        let hiScore   = 0;
+        let autopilot = false;
+        let delayTime = 0;
+        
+        return this;
+    }
+
+    /* Main game loop. */
+    method void run() {
+        var int key;
+
+        // show start animation
+        do showStartAnimation();
+
+        while (running) {
+            // ---------- Input handling ----------
+            let key = Keyboard.keyPressed();
+            if (~(key = 0)) {
+                // quit
+                if ((key = 113) | (key = 81)) { // 'q'
+                    let running = false;
+                }
+
+                // pause/unpause
+                if ((key = 112) | (key = 80)) { // 'p'
+                    let pausing = ~pausing;
+                }
+
+                // toggle AI
+                if (key = 32) { // space
+                    let autopilot = ~autopilot;
+                }
+
+                // restart game
+                if ((key = 114) | (key = 82)) { // 'r'
+                    do reset();
+                }
+
+                // direction control (only when AI off and not paused)
+                if ((~autopilot) & (~pausing) & (~gameOver)) {
+                    if ((key = 119) | (key = 87)) { do snake.turnUp(); }    // 'w'
+                    if ((key = 115) | (key = 83)) { do snake.turnDown(); }  // 's'
+                    if ((key = 97)  | (key = 65)) { do snake.turnLeft(); }  // 'a'
+                    if ((key = 100) | (key = 68)) { do snake.turnRight(); } // 'd'
+                }
+            }
+
+            if(delayTime < 1){
+                // ---------- Game logic ----------
+                if ((~pausing) & running) {
+                    if (autopilot) { do autoMove(); }
+                    if (~snake.moveCollision()) {
+                        // collect food
+                        if ((snake.headX() = food.x()) & (snake.headY() = food.y())) {
+                            do snake.grow();
+                            let score = score + 10;
+                            do food.reGenerate(snake);
+                        }
+                    } else {
+                        do handleGameOver();
+                    }
+                }
+            }
+
+            // ---------- Render ----------
+            do render();
+
+            // ---------- Frame delay ----------
+            if(delayTime < 1) {
+                let delayTime = delay();
+            }
+            let delayTime = delayTime - 1;
+            do Sys.wait(1);
+        }
+
+        return;
+    }
+
+    /* Reset for a new round*/
+    method void reset() {
+        do snake.dispose();
+        let snake = Snake.new(width / 2, height / 2, 4); // start in middle, length 4
+        do food.reGenerate(snake);
+
+        let score = 0;
+        let pausing = false;
+        let gameOver = false;
+        return;
+    }
+
+    /* Game over handling */
+    method void handleGameOver() {
+        let gameOver = true;
+        let pausing   = true; // stop moving but still accept R/Q
+
+        // update hi-score
+        if (score > hiScore) {
+            let hiScore = score;
+        }
+
+        return;
+    }
+
+    /* AI move towards food */
+    method void autoMove() {
+        var int sx, sy, fx, fy, dirX, dirY, dx, dy;
+        var boolean validMove;
+
+        let sx  = snake.headX();
+        let sy  = snake.headY();
+        let fx  = food.x();
+        let fy  = food.y();
+        let dirX = snake.dirX();
+        let dirY = snake.dirY();
+        let dx = fx - sx;
+        let dy = fy - sy;
+        let validMove = false;
+
+        // ----- Horizontal Movement First -----
+        // Left
+        if ((dx < 0) & (~((dirX = 1) & (dirY = 0))) & canMove(-1, 0)) {
+            do snake.turnLeft();
+            let validMove = true;
+        }
+        // Right
+        if (~validMove & (dx > 0) & (~((dirX = -1) & (dirY = 0))) & canMove(1, 0)) {
+            do snake.turnRight();
+            let validMove = true;
+        }
+        // Up
+        if (~validMove & (dy < 0) & (~((dirY = 1) & (dirX = 0))) & canMove(0, -1)) {
+            do snake.turnUp();
+            let validMove = true;
+        }
+        // Down
+        if (~validMove & (dy > 0) & (~((dirY = -1) & (dirX = 0))) & canMove(0, 1)) {
+            do snake.turnDown();
+            let validMove = true;
+        }
+
+        // Left
+        if (~validMove & (~((dirX = 1) & (dirY = 0))) & canMove(-1, 0)) {
+            do snake.turnLeft();
+            let validMove = true;
+        }
+        // Right
+        if (~validMove & (~((dirX = -1) & (dirY = 0))) & canMove(1, 0)) {
+            do snake.turnRight();
+            let validMove = true;
+        }
+        // Up
+        if (~validMove & (~((dirY = 1) & (dirX = 0))) & canMove(0, -1)) {
+            do snake.turnUp();
+            let validMove = true;
+        }
+        // Down
+        if (~validMove & (~((dirY = -1) & (dirX = 0))) & canMove(0, 1)) {
+            do snake.turnDown();
+            let validMove = true;
+        }
+    
+        return;
+    }
+
+    // check whether the snake can move towards (dx, dy)
+    method boolean canMove(int dx, int dy) {
+        var int nx, ny, i;
+
+        let nx = snake.headX() + dx;
+        let ny = snake.headY() + dy;
+
+        // 1. wall collision?
+        if ((nx < 0) | (ny < 0) | (nx > (width - 1)) | (ny > (height - 1))) {
+            return false;
+        }
+
+        // 2. self collision?
+        return ~snake.occupies(nx, ny);
+    }
+
+
+    /* Get frame delay according to snake length: longer -> faster. */
+    method int delay() {
+        var int len, baseDelay, speedUp, d;
+
+        let len  = snake.len(); // current length
+        let baseDelay = 12;
+        let speedUp = len / 8; // 1 frame per length unit
+        let d = baseDelay - speedUp;
+        if (d < 2) { let d = 2; } // minimum delay
+        return d;
+    }
+
+    /* Draw the Screen. */
+    method void render() {
+        // clear & draw snake and food
+        do Screen.clearScreen();
+        do Screen.setColor(true);
+        do Screen.drawRectangle(0, 224, 511, 226); // bottom border
+        do snake.draw();
+        do food.draw();
+
+        do Output.moveCursor(21, 0);
+        do Output.printString(ScoreString);
+        do Output.printInt(score);
+
+        do Output.printString(HiScoreString);
+        do Output.printInt(hiScore);
+
+        if (pausing) {
+            do Output.printString(PauseString);
+        }
+        if (autopilot) {
+            do Output.printString(AIString);
+        }
+        if (gameOver) {
+            do Output.moveCursor(22, 0);
+            do Output.printString(GameOverString);
+        }
+
+        return;
+    }
+
+    /* Start animation: 3-2-1-GO */
+    method void showStartAnimation() {
+        var int i;
+
+        do Screen.clearScreen();
+        let i = 3;
+        while (i > 0) {
+            do Screen.clearScreen();
+            do Output.moveCursor(10, 30);
+            do Output.printInt(i);
+            do Sys.wait(300);   
+            let i = i - 1;
+        }
+
+        // display "GO!"
+        do Screen.clearScreen();
+        do Output.moveCursor(10, 29);
+        do Output.printString("GO!");
+        do Sys.wait(300);
+        do Screen.clearScreen();
+        return;
+    }
+
+
+    /* Clean up objects. */
+    method void dispose() {
+        do snake.dispose();
+        return;
+    }
+}

@@ -1,0 +1,291 @@
+/* Snake.jack
+ * Maintains body cells of the snake and its movement.
+ * Provides methods to move, grow, turn, draw, and check collisions.
+ */
+class Snake {
+    static int maxLen; // maximum length of the snake
+    static int maxWidth; // maximum grid width
+    static int maxHeight; // maximum grid height
+    static int cellSize; // size of each segment
+
+    field int directionX; 
+    field int directionY; // current movement direction, (0,-1)=up,(1,0)=right,(0,1)=down,(-1,0)=left
+    field int cacheDirX; 
+    field int cacheDirY; // cached direction
+    field Array xs; // x position of each body segment
+    field Array ys; // y position of each body segment
+    field int length; // current length of the snake
+    
+    function void init(int cell, int maxW, int maxH, int maximumLength) {
+        let cellSize = cell;
+        let maxWidth = maxW;
+        let maxHeight = maxH;
+        let maxLen = maximumLength;
+        return;
+    }
+
+    /* Create a snake starting at (startX,startY) with initial length len. */
+    constructor Snake new(int startX, int startY, int len) {
+        var int i;
+        let length = len; // initial length
+        let directionX = 1; 
+        let directionY = 0; // initially moving right
+        let cacheDirX = 1; 
+        let cacheDirY = 0; // initially moving right
+
+        let xs = Array.new(maxLen);
+        let ys = Array.new(maxLen);
+
+        let i = 0;
+
+        // initialize body segments
+        while (i < len) {
+            let xs[i] = startX - i;
+            let ys[i] = startY;
+            let i = i + 1;
+        }
+
+        return this;
+    }
+
+    /* Move one step. Return true if collision occurs (wall or self). */
+    method boolean moveCollision() {
+        var int i, nx, ny;
+        let directionX = cacheDirX;
+        let directionY = cacheDirY;
+        let nx = xs[0] + directionX;
+        let ny = ys[0] + directionY; // new head position
+
+        // wall collision?
+        if ((nx < 0) | (ny < 0) | (nx > (maxWidth - 1)) | (ny > (maxHeight - 1))) {
+            return true;
+        }
+
+        // shift body segments
+        let i = length - 1; 
+        while (i > 0) {
+            // self collision?
+            if ((xs[i] = nx) & (ys[i] = ny)) {
+                return true;
+            }
+            let xs[i] = xs[i - 1];
+            let ys[i] = ys[i - 1];
+            let i = i - 1;
+        }
+
+        // place new head
+        let xs[0] = nx;
+        let ys[0] = ny;
+        return false;
+    }
+
+    /* Increase snake length by one*/
+    method void grow() {
+        if (length < maxLen) {
+            let xs[length] = xs[length - 1];
+            let ys[length] = ys[length - 1];
+            let length = length + 1;
+        }
+        return;
+    }
+
+    // turn methods， prevent reversing direction
+    method void turnUp() {
+        if (~((directionY = 1) & (directionX = 0))) { // not moving down
+            let cacheDirX = 0;
+            let cacheDirY = -1;
+        }
+        return;
+    }
+
+    method void turnRight() {
+        if (~((directionY = 0) & (directionX = -1))) { // not moving left
+            let cacheDirX = 1;
+            let cacheDirY = 0;
+        }
+        return;
+    }
+
+    method void turnDown() {
+        if (~((directionY = -1) & (directionX = 0))) { // not moving up
+            let cacheDirX = 0;
+            let cacheDirY = 1;
+        }
+        return;
+    }
+
+    method void turnLeft() {
+        if (~((directionY = 0) & (directionX = 1))) { // not moving right
+            let cacheDirX = -1;
+            let cacheDirY = 0;
+        }
+        return;
+    }
+
+    // getters
+    method int headX() { return xs[0]; }
+    method int headY() { return ys[0]; }
+    method int dirX() { return directionX; }
+    method int dirY() { return directionY; }
+    method int len()   { return length; }
+
+    /* Whether the snake occupies grid cell (x,y). */
+    method boolean occupies(int x, int y) {
+        var int i;
+        let i = 0;
+        while (i < length) {
+            if ((xs[i] = x) & (ys[i] = y)) {
+                return true;
+            }
+            let i = i + 1;
+        }
+        return false;
+    }
+
+    /* Draw the snake. */
+    method void draw() {
+        var int i, location;
+        do Screen.setColor(true);
+        let i = 0;
+        // Draw each segment
+        while (i < length) {
+            let location = ys[i] * 32 * cellSize + xs[i];
+            if (i = 0) {
+                if (directionX = 1) {
+                    do drawHeadRight(location);
+                } else {
+                    if (directionX = -1) {
+                        do drawHeadLeft(location);
+                    } else {
+                        if (directionY = 1) {
+                            do drawHeadDown(location);
+                        } else {
+                            do drawHeadUp(location);
+                        }
+                    }
+                }
+            } else {
+                do drawBody(location);
+            }
+            let i = i + 1;
+        }
+        return;
+    }
+
+    method void drawHeadRight(int location) {
+        var int memAddress;
+		let memAddress = 16384 + location;
+		do Memory.poke(memAddress + 0, 127);
+        do Memory.poke(memAddress + 32, 1023);
+        do Memory.poke(memAddress + 64, 4095);
+        do Memory.poke(memAddress + 96, 8191);
+        do Memory.poke(memAddress + 128, 15487);
+        do Memory.poke(memAddress + 160, 31871);
+        do Memory.poke(memAddress + 192, -1);
+        do Memory.poke(memAddress + 224, 32767);
+        do Memory.poke(memAddress + 256, 32767);
+        do Memory.poke(memAddress + 288, -1);
+        do Memory.poke(memAddress + 320, 31871);
+        do Memory.poke(memAddress + 352, 15487);
+        do Memory.poke(memAddress + 384, 8191);
+        do Memory.poke(memAddress + 416, 4095);
+        do Memory.poke(memAddress + 448, 1023);
+        do Memory.poke(memAddress + 480, 127);
+        return;
+	}
+
+    method void drawHeadDown(int location) {
+        var int memAddress;
+		let memAddress = 16384 + location;
+		do Memory.poke(memAddress + 0, -1);
+        do Memory.poke(memAddress + 32, -1);
+        do Memory.poke(memAddress + 64, -1);
+        do Memory.poke(memAddress + 96, -1);
+        do Memory.poke(memAddress + 128, -1);
+        do Memory.poke(memAddress + 160, -1);
+        do Memory.poke(memAddress + 192, -1);
+        do Memory.poke(memAddress + 224, 29646);
+        do Memory.poke(memAddress + 256, 29646);
+        do Memory.poke(memAddress + 288, 29646);
+        do Memory.poke(memAddress + 320, 16380);
+        do Memory.poke(memAddress + 352, 16380);
+        do Memory.poke(memAddress + 384, 8184);
+        do Memory.poke(memAddress + 416, 4080);
+        do Memory.poke(memAddress + 448, 2016);
+        do Memory.poke(memAddress + 480, 576);
+        return;
+	}
+
+    method void drawHeadLeft(int location) {
+        var int memAddress;
+		let memAddress = 16384 + location;
+		do Memory.poke(memAddress + 0, -512);
+        do Memory.poke(memAddress + 32, -64);
+        do Memory.poke(memAddress + 64, -16);
+        do Memory.poke(memAddress + 96, -8);
+        do Memory.poke(memAddress + 128, -452);
+        do Memory.poke(memAddress + 160, -450);
+        do Memory.poke(memAddress + 192, -1);
+        do Memory.poke(memAddress + 224, -2);
+        do Memory.poke(memAddress + 256, -2);
+        do Memory.poke(memAddress + 288, -1);
+        do Memory.poke(memAddress + 320, -450);
+        do Memory.poke(memAddress + 352, -452);
+        do Memory.poke(memAddress + 384, -8);
+        do Memory.poke(memAddress + 416, -16);
+        do Memory.poke(memAddress + 448, -64);
+        do Memory.poke(memAddress + 480, -512);
+        return;
+	}
+
+    method void drawHeadUp(int location) {
+        var int memAddress;
+		let memAddress = 16384 + location;
+		do Memory.poke(memAddress + 0, 576);
+        do Memory.poke(memAddress + 32, 2016);
+        do Memory.poke(memAddress + 64, 4080);
+        do Memory.poke(memAddress + 96, 8184);
+        do Memory.poke(memAddress + 128, 16380);
+        do Memory.poke(memAddress + 160, 16380);
+        do Memory.poke(memAddress + 192, 29646);
+        do Memory.poke(memAddress + 224, 29646);
+        do Memory.poke(memAddress + 256, 29646);
+        do Memory.poke(memAddress + 288, -1);
+        do Memory.poke(memAddress + 320, -1);
+        do Memory.poke(memAddress + 352, -1);
+        do Memory.poke(memAddress + 384, -1);
+        do Memory.poke(memAddress + 416, -1);
+        do Memory.poke(memAddress + 448, -1);
+        do Memory.poke(memAddress + 480, -1);
+        return;
+	}
+
+    method void drawBody(int location) {
+        var int memAddress;
+		let memAddress = 16384 + location;
+		do Memory.poke(memAddress + 0, 2016);
+		do Memory.poke(memAddress + 32, 4080);
+		do Memory.poke(memAddress + 64, 8184);
+		do Memory.poke(memAddress + 96, 16380);
+		do Memory.poke(memAddress + 128, 30702);
+		do Memory.poke(memAddress + 160, -1);
+		do Memory.poke(memAddress + 192, -577);
+		do Memory.poke(memAddress + 224, -1);
+		do Memory.poke(memAddress + 256, -1);
+		do Memory.poke(memAddress + 288, -577);
+		do Memory.poke(memAddress + 320, -1);
+		do Memory.poke(memAddress + 352, 30702);
+		do Memory.poke(memAddress + 384, 16380);
+		do Memory.poke(memAddress + 416, 8184);
+		do Memory.poke(memAddress + 448, 4080);
+		do Memory.poke(memAddress + 480, 2016);
+		return;
+	}
+
+    /* Free arrays. */
+    method void dispose() {
+        do xs.dispose();
+        do ys.dispose();
+        return;
+    }
+}

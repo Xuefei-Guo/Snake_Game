@@ -1,0 +1,1078 @@
+function Snake.init 0
+    push argument 0
+    pop static 3
+    push argument 1
+    pop static 1
+    push argument 2
+    pop static 2
+    push argument 3
+    pop static 0
+    push constant 0
+    return
+function Snake.new 1
+    push constant 7
+    call Memory.alloc 1
+    pop pointer 0
+    push argument 2
+    pop this 6
+    push constant 1
+    pop this 0
+    push constant 0
+    pop this 1
+    push constant 1
+    pop this 2
+    push constant 0
+    pop this 3
+    push static 0
+    call Array.new 1
+    pop this 4
+    push static 0
+    call Array.new 1
+    pop this 5
+    push constant 0
+    pop local 0
+label Snake_0
+    push local 0
+    push argument 2
+    lt
+    not
+    if-goto Snake_1
+    push local 0
+    push this 4
+    add
+    push argument 0
+    push local 0
+    sub
+    pop temp 0
+    pop pointer 1
+    push temp 0
+    pop that 0
+    push local 0
+    push this 5
+    add
+    push argument 1
+    pop temp 0
+    pop pointer 1
+    push temp 0
+    pop that 0
+    push local 0
+    push constant 1
+    add
+    pop local 0
+    goto Snake_0
+label Snake_1
+    push pointer 0
+    return
+function Snake.moveCollision 3
+    push argument 0
+    pop pointer 0
+    push this 2
+    pop this 0
+    push this 3
+    pop this 1
+    push constant 0
+    push this 4
+    add
+    pop pointer 1
+    push that 0
+    push this 0
+    add
+    pop local 1
+    push constant 0
+    push this 5
+    add
+    pop pointer 1
+    push that 0
+    push this 1
+    add
+    pop local 2
+    push local 1
+    push constant 0
+    lt
+    push local 2
+    push constant 0
+    lt
+    or
+    push local 1
+    push static 1
+    push constant 1
+    sub
+    gt
+    or
+    push local 2
+    push static 2
+    push constant 1
+    sub
+    gt
+    or
+    not
+    if-goto Snake_3
+    push constant 1
+    neg
+    return
+    goto Snake_2
+label Snake_3
+label Snake_2
+    push this 6
+    push constant 1
+    sub
+    pop local 0
+label Snake_4
+    push local 0
+    push constant 0
+    gt
+    not
+    if-goto Snake_5
+    push local 0
+    push this 4
+    add
+    pop pointer 1
+    push that 0
+    push local 1
+    eq
+    push local 0
+    push this 5
+    add
+    pop pointer 1
+    push that 0
+    push local 2
+    eq
+    and
+    not
+    if-goto Snake_7
+    push constant 1
+    neg
+    return
+    goto Snake_6
+label Snake_7
+label Snake_6
+    push local 0
+    push this 4
+    add
+    push local 0
+    push constant 1
+    sub
+    push this 4
+    add
+    pop pointer 1
+    push that 0
+    pop temp 0
+    pop pointer 1
+    push temp 0
+    pop that 0
+    push local 0
+    push this 5
+    add
+    push local 0
+    push constant 1
+    sub
+    push this 5
+    add
+    pop pointer 1
+    push that 0
+    pop temp 0
+    pop pointer 1
+    push temp 0
+    pop that 0
+    push local 0
+    push constant 1
+    sub
+    pop local 0
+    goto Snake_4
+label Snake_5
+    push constant 0
+    push this 4
+    add
+    push local 1
+    pop temp 0
+    pop pointer 1
+    push temp 0
+    pop that 0
+    push constant 0
+    push this 5
+    add
+    push local 2
+    pop temp 0
+    pop pointer 1
+    push temp 0
+    pop that 0
+    push constant 0
+    return
+function Snake.grow 0
+    push argument 0
+    pop pointer 0
+    push this 6
+    push static 0
+    lt
+    not
+    if-goto Snake_9
+    push this 6
+    push this 4
+    add
+    push this 6
+    push constant 1
+    sub
+    push this 4
+    add
+    pop pointer 1
+    push that 0
+    pop temp 0
+    pop pointer 1
+    push temp 0
+    pop that 0
+    push this 6
+    push this 5
+    add
+    push this 6
+    push constant 1
+    sub
+    push this 5
+    add
+    pop pointer 1
+    push that 0
+    pop temp 0
+    pop pointer 1
+    push temp 0
+    pop that 0
+    push this 6
+    push constant 1
+    add
+    pop this 6
+    goto Snake_8
+label Snake_9
+label Snake_8
+    push constant 0
+    return
+function Snake.turnUp 0
+    push argument 0
+    pop pointer 0
+    push this 1
+    push constant 1
+    eq
+    push this 0
+    push constant 0
+    eq
+    and
+    not
+    not
+    if-goto Snake_11
+    push constant 0
+    pop this 2
+    push constant 1
+    neg
+    pop this 3
+    goto Snake_10
+label Snake_11
+label Snake_10
+    push constant 0
+    return
+function Snake.turnRight 0
+    push argument 0
+    pop pointer 0
+    push this 1
+    push constant 0
+    eq
+    push this 0
+    push constant 1
+    neg
+    eq
+    and
+    not
+    not
+    if-goto Snake_13
+    push constant 1
+    pop this 2
+    push constant 0
+    pop this 3
+    goto Snake_12
+label Snake_13
+label Snake_12
+    push constant 0
+    return
+function Snake.turnDown 0
+    push argument 0
+    pop pointer 0
+    push this 1
+    push constant 1
+    neg
+    eq
+    push this 0
+    push constant 0
+    eq
+    and
+    not
+    not
+    if-goto Snake_15
+    push constant 0
+    pop this 2
+    push constant 1
+    pop this 3
+    goto Snake_14
+label Snake_15
+label Snake_14
+    push constant 0
+    return
+function Snake.turnLeft 0
+    push argument 0
+    pop pointer 0
+    push this 1
+    push constant 0
+    eq
+    push this 0
+    push constant 1
+    eq
+    and
+    not
+    not
+    if-goto Snake_17
+    push constant 1
+    neg
+    pop this 2
+    push constant 0
+    pop this 3
+    goto Snake_16
+label Snake_17
+label Snake_16
+    push constant 0
+    return
+function Snake.headX 0
+    push argument 0
+    pop pointer 0
+    push constant 0
+    push this 4
+    add
+    pop pointer 1
+    push that 0
+    return
+function Snake.headY 0
+    push argument 0
+    pop pointer 0
+    push constant 0
+    push this 5
+    add
+    pop pointer 1
+    push that 0
+    return
+function Snake.dirX 0
+    push argument 0
+    pop pointer 0
+    push this 0
+    return
+function Snake.dirY 0
+    push argument 0
+    pop pointer 0
+    push this 1
+    return
+function Snake.len 0
+    push argument 0
+    pop pointer 0
+    push this 6
+    return
+function Snake.occupies 1
+    push argument 0
+    pop pointer 0
+    push constant 0
+    pop local 0
+label Snake_18
+    push local 0
+    push this 6
+    lt
+    not
+    if-goto Snake_19
+    push local 0
+    push this 4
+    add
+    pop pointer 1
+    push that 0
+    push argument 1
+    eq
+    push local 0
+    push this 5
+    add
+    pop pointer 1
+    push that 0
+    push argument 2
+    eq
+    and
+    not
+    if-goto Snake_21
+    push constant 1
+    neg
+    return
+    goto Snake_20
+label Snake_21
+label Snake_20
+    push local 0
+    push constant 1
+    add
+    pop local 0
+    goto Snake_18
+label Snake_19
+    push constant 0
+    return
+function Snake.draw 2
+    push argument 0
+    pop pointer 0
+    push constant 1
+    neg
+    call Screen.setColor 1
+    pop temp 0
+    push constant 0
+    pop local 0
+label Snake_22
+    push local 0
+    push this 6
+    lt
+    not
+    if-goto Snake_23
+    push local 0
+    push this 5
+    add
+    pop pointer 1
+    push that 0
+    push constant 32
+    call Math.multiply 2
+    push static 3
+    call Math.multiply 2
+    push local 0
+    push this 4
+    add
+    pop pointer 1
+    push that 0
+    add
+    pop local 1
+    push local 0
+    push constant 0
+    eq
+    not
+    if-goto Snake_25
+    push this 0
+    push constant 1
+    eq
+    not
+    if-goto Snake_27
+    push pointer 0
+    push local 1
+    call Snake.drawHeadRight 2
+    pop temp 0
+    goto Snake_26
+label Snake_27
+    push this 0
+    push constant 1
+    neg
+    eq
+    not
+    if-goto Snake_29
+    push pointer 0
+    push local 1
+    call Snake.drawHeadLeft 2
+    pop temp 0
+    goto Snake_28
+label Snake_29
+    push this 1
+    push constant 1
+    eq
+    not
+    if-goto Snake_31
+    push pointer 0
+    push local 1
+    call Snake.drawHeadDown 2
+    pop temp 0
+    goto Snake_30
+label Snake_31
+    push pointer 0
+    push local 1
+    call Snake.drawHeadUp 2
+    pop temp 0
+label Snake_30
+label Snake_28
+label Snake_26
+    goto Snake_24
+label Snake_25
+    push pointer 0
+    push local 1
+    call Snake.drawBody 2
+    pop temp 0
+label Snake_24
+    push local 0
+    push constant 1
+    add
+    pop local 0
+    goto Snake_22
+label Snake_23
+    push constant 0
+    return
+function Snake.drawHeadRight 1
+    push argument 0
+    pop pointer 0
+    push constant 16384
+    push argument 1
+    add
+    pop local 0
+    push local 0
+    push constant 0
+    add
+    push constant 127
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 32
+    add
+    push constant 1023
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 64
+    add
+    push constant 4095
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 96
+    add
+    push constant 8191
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 128
+    add
+    push constant 15487
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 160
+    add
+    push constant 31871
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 192
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 224
+    add
+    push constant 32767
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 256
+    add
+    push constant 32767
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 288
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 320
+    add
+    push constant 31871
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 352
+    add
+    push constant 15487
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 384
+    add
+    push constant 8191
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 416
+    add
+    push constant 4095
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 448
+    add
+    push constant 1023
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 480
+    add
+    push constant 127
+    call Memory.poke 2
+    pop temp 0
+    push constant 0
+    return
+function Snake.drawHeadDown 1
+    push argument 0
+    pop pointer 0
+    push constant 16384
+    push argument 1
+    add
+    pop local 0
+    push local 0
+    push constant 0
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 32
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 64
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 96
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 128
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 160
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 192
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 224
+    add
+    push constant 29646
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 256
+    add
+    push constant 29646
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 288
+    add
+    push constant 29646
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 320
+    add
+    push constant 16380
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 352
+    add
+    push constant 16380
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 384
+    add
+    push constant 8184
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 416
+    add
+    push constant 4080
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 448
+    add
+    push constant 2016
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 480
+    add
+    push constant 576
+    call Memory.poke 2
+    pop temp 0
+    push constant 0
+    return
+function Snake.drawHeadLeft 1
+    push argument 0
+    pop pointer 0
+    push constant 16384
+    push argument 1
+    add
+    pop local 0
+    push local 0
+    push constant 0
+    add
+    push constant 512
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 32
+    add
+    push constant 64
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 64
+    add
+    push constant 16
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 96
+    add
+    push constant 8
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 128
+    add
+    push constant 452
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 160
+    add
+    push constant 450
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 192
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 224
+    add
+    push constant 2
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 256
+    add
+    push constant 2
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 288
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 320
+    add
+    push constant 450
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 352
+    add
+    push constant 452
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 384
+    add
+    push constant 8
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 416
+    add
+    push constant 16
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 448
+    add
+    push constant 64
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 480
+    add
+    push constant 512
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push constant 0
+    return
+function Snake.drawHeadUp 1
+    push argument 0
+    pop pointer 0
+    push constant 16384
+    push argument 1
+    add
+    pop local 0
+    push local 0
+    push constant 0
+    add
+    push constant 576
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 32
+    add
+    push constant 2016
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 64
+    add
+    push constant 4080
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 96
+    add
+    push constant 8184
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 128
+    add
+    push constant 16380
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 160
+    add
+    push constant 16380
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 192
+    add
+    push constant 29646
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 224
+    add
+    push constant 29646
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 256
+    add
+    push constant 29646
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 288
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 320
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 352
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 384
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 416
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 448
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 480
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push constant 0
+    return
+function Snake.drawBody 1
+    push argument 0
+    pop pointer 0
+    push constant 16384
+    push argument 1
+    add
+    pop local 0
+    push local 0
+    push constant 0
+    add
+    push constant 2016
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 32
+    add
+    push constant 4080
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 64
+    add
+    push constant 8184
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 96
+    add
+    push constant 16380
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 128
+    add
+    push constant 30702
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 160
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 192
+    add
+    push constant 577
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 224
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 256
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 288
+    add
+    push constant 577
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 320
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 352
+    add
+    push constant 30702
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 384
+    add
+    push constant 16380
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 416
+    add
+    push constant 8184
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 448
+    add
+    push constant 4080
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 480
+    add
+    push constant 2016
+    call Memory.poke 2
+    pop temp 0
+    push constant 0
+    return
+function Snake.dispose 0
+    push argument 0
+    pop pointer 0
+    push this 4
+    call Array.dispose 1
+    pop temp 0
+    push this 5
+    call Array.dispose 1
+    pop temp 0
+    push constant 0
+    return

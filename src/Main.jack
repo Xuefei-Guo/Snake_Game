@@ -1,0 +1,13 @@
+/* Main.jack
+ * Entry point of Snake game.
+ * Initializes and runs the game.
+ */
+class Main {
+    function void main() {
+        var Game game;
+        let game = Game.new();
+        do game.run();
+        do game.dispose();
+        return;
+    }
+}

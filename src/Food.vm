@@ -1,0 +1,217 @@
+function Food.init 0
+    push argument 0
+    pop static 0
+    push argument 1
+    pop static 1
+    push argument 2
+    pop static 2
+    push constant 0
+    return
+function Food.new 0
+    push constant 2
+    call Memory.alloc 1
+    pop pointer 0
+    push constant 0
+    pop this 0
+    push constant 0
+    pop this 1
+    push pointer 0
+    return
+function Food.reGenerate 4
+    push argument 0
+    pop pointer 0
+    call Random.random 0
+    pop local 0
+    call Random.random 0
+    pop local 1
+    push local 0
+    push local 0
+    push static 1
+    call Math.divide 2
+    push static 1
+    call Math.multiply 2
+    sub
+    pop local 2
+    push local 1
+    push local 1
+    push static 2
+    call Math.divide 2
+    push static 2
+    call Math.multiply 2
+    sub
+    pop local 3
+label Food_0
+    push argument 1
+    push local 2
+    push local 3
+    call Snake.occupies 3
+    not
+    if-goto Food_1
+    call Random.random 0
+    pop local 0
+    call Random.random 0
+    pop local 1
+    push local 0
+    push local 0
+    push static 1
+    call Math.divide 2
+    push static 1
+    call Math.multiply 2
+    sub
+    pop local 2
+    push local 1
+    push local 1
+    push static 2
+    call Math.divide 2
+    push static 2
+    call Math.multiply 2
+    sub
+    pop local 3
+    goto Food_0
+label Food_1
+    push local 2
+    pop this 0
+    push local 3
+    pop this 1
+    push constant 0
+    return
+function Food.draw 0
+    push argument 0
+    pop pointer 0
+    push constant 1
+    neg
+    call Screen.setColor 1
+    pop temp 0
+    push pointer 0
+    push this 1
+    push constant 32
+    call Math.multiply 2
+    push static 0
+    call Math.multiply 2
+    push this 0
+    add
+    call Food.drawFood 2
+    pop temp 0
+    push constant 0
+    return
+function Food.drawFood 1
+    push argument 0
+    pop pointer 0
+    push constant 16384
+    push argument 1
+    add
+    pop local 0
+    push local 0
+    push constant 0
+    add
+    push constant 7224
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 32
+    add
+    push constant 15996
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 64
+    add
+    push constant 32766
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 96
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 128
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 160
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 192
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 224
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 256
+    add
+    push constant 1
+    neg
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 288
+    add
+    push constant 32766
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 320
+    add
+    push constant 16380
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 352
+    add
+    push constant 8184
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 384
+    add
+    push constant 4080
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 416
+    add
+    push constant 2016
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 448
+    add
+    push constant 960
+    call Memory.poke 2
+    pop temp 0
+    push local 0
+    push constant 480
+    add
+    push constant 384
+    call Memory.poke 2
+    pop temp 0
+    push constant 0
+    return
+function Food.x 0
+    push argument 0
+    pop pointer 0
+    push this 0
+    return
+function Food.y 0
+    push argument 0
+    pop pointer 0
+    push this 1
+    return

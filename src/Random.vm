@@ -1,0 +1,18 @@
+function Random.setSeed 0
+    push argument 0
+    pop static 0
+    push constant 0
+    return
+function Random.random 0
+    push static 0
+    push constant 25173
+    call Math.multiply 2
+    push constant 13849
+    add
+    pop static 0
+    push static 0
+    push constant 32767
+    and
+    pop static 0
+    push static 0
+    return

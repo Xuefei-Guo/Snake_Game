@@ -1,0 +1,76 @@
+/* Food.jack
+ * Represents a food cell on the grid.
+ * Provides methods to generate and draw itself.
+ */
+class Food {
+    field int x, y; 
+    static int cellSize; // size of the food cell
+    static int maxWidth; // width of the grid
+    static int maxHeight; // height of the grid
+
+    function void init(int cell, int width, int height) {
+        let cellSize = cell;
+        let maxWidth = width;
+        let maxHeight = height;
+        return;
+    }
+
+    constructor Food new() {
+        let x = 0;
+        let y = 0;
+        return this;
+    }
+
+    /* generate at random position not occupied by the snake. */
+    method void reGenerate(Snake snake) {
+        var int rx, ry, gx, gy;
+
+        let rx = Random.random();
+        let ry = Random.random();
+        let gx = rx - ((rx / maxWidth) * maxWidth);
+        let gy = ry - ((ry / maxHeight) * maxHeight);
+
+        while (snake.occupies(gx, gy)) {
+            let rx = Random.random();
+            let ry = Random.random();
+            let gx = rx - ((rx / maxWidth) * maxWidth);
+            let gy = ry - ((ry / maxHeight) * maxHeight);
+        }
+
+        let x = gx;
+        let y = gy;
+        return;
+    }
+
+    /* Draw the food. */
+    method void draw() {
+        do Screen.setColor(true);
+        do drawFood(y * 32 * cellSize + x);
+        return;
+    }
+
+    method void drawFood(int location) {
+        var int memAddress;
+		let memAddress = 16384 + location;
+		do Memory.poke(memAddress + 0, 7224);
+		do Memory.poke(memAddress + 32, 15996);
+		do Memory.poke(memAddress + 64, 32766);
+		do Memory.poke(memAddress + 96, -1);
+		do Memory.poke(memAddress + 128, -1);
+		do Memory.poke(memAddress + 160, -1);
+		do Memory.poke(memAddress + 192, -1);
+		do Memory.poke(memAddress + 224, -1);
+		do Memory.poke(memAddress + 256, -1);
+		do Memory.poke(memAddress + 288, 32766);
+		do Memory.poke(memAddress + 320, 16380);
+		do Memory.poke(memAddress + 352, 8184);
+		do Memory.poke(memAddress + 384, 4080);
+		do Memory.poke(memAddress + 416, 2016);
+		do Memory.poke(memAddress + 448, 960);
+		do Memory.poke(memAddress + 480, 384);
+		return;
+	}
+
+    method int x() { return x; }
+    method int y() { return y; }
+}
