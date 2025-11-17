@@ -1159,7 +1159,7 @@ label Game_64
     push local 0
     call Output.printInt 1
     pop temp 0
-    push constant 300
+    push constant 500
     call Sys.wait 1
     pop temp 0
     push local 0
@@ -1184,7 +1184,7 @@ label Game_65
     call String.appendChar 2
     call Output.printString 1
     pop temp 0
-    push constant 300
+    push constant 500
     call Sys.wait 1
     pop temp 0
     call Screen.clearScreen 0
