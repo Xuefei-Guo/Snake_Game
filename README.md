@@ -1,7 +1,7 @@
 
-# Project 9 - Programming in Jack
+# Snake Game
 
-1. Features
+## 1. Features
 
 - Classic Snake Game.
 - Keyboard controls (W/A/S/D) and pause/restart/quit keys.
@@ -11,7 +11,7 @@
 - Screen, Sys OS for rendering and timing.
 - Using Bitmap for Snake and Food rendering.
 
-2. Controls
+## 2. Controls
 
 - W / w : move up
 - A / a : move left
@@ -22,14 +22,14 @@
 - R / r : restart
 - Q / q : quit
 
-3. How to run
+## 3. How to run
 
 - Compile the Jack source files to VM code using NANDTeries' Jack Compiler.
 - Run the vm code on NANDTeries' VM Emulator.
 - Run the program. 
 - Enable keybord input. Press any key to begin.
 
-4. Gameplay details
+## 4. Gameplay details
 
 - Grid cell size 16, visible area 512×256 pixels, 32×14 grid cells, last two line used to show instructions.
 - The snake starts in the center with an initial length of 4.
