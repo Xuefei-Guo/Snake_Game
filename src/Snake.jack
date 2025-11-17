@@ -89,7 +89,7 @@ class Snake {
         return;
     }
 
-    // turn methods， prevent reversing direction
+    // turn methods, prevent reversing direction
     method void turnUp() {
         if (~((directionY = 1) & (directionX = 0))) { // not moving down
             let cacheDirX = 0;

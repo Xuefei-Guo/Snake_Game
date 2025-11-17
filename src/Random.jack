@@ -13,7 +13,7 @@ class Random {
 
     /* return a random integer */
     function int random() {
-        // LCG: seed = (a * seed + c) mod 2^16
+        // LCG
         let seed = seed * 25173 + 13849;
 
         // keep the low 15 bits, resulting in 0..32767

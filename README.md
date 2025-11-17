@@ -24,10 +24,10 @@
 
 ## 3. How to run
 
-- Compile the Jack source files to VM code using NANDTeries' Jack Compiler.
-- Run the vm code on NANDTeries' VM Emulator.
+- Compile the Jack source files to VM code using NANDTeris' Jack Compiler.
+- Run the vm code on NANDTeris' VM Emulator.
 - Run the program. 
-- Enable keybord input. Press any key to begin.
+- Enable keyboard input. Press any key to begin.
 
 ## 4. Gameplay details
 
