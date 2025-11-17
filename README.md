@@ -41,6 +41,11 @@
 - Using staying time at the start page as the random seed.
 - Memory safe: Strings are not allocated every frame; Snake arrays are properly disposed and recreated on reset; No heap overflow.
 
+Start:
 ![Start State](StartPage.png)
+
+Playing:
 ![Playing State](PlayingPage.png)
+
+Gameover:
 ![Gameover State](GameoverPage.png)
